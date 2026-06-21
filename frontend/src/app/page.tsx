@@ -67,7 +67,7 @@ export default function Home() {
         createThread={createThread}
         deleteThread={deleteThread}
         loading={threadsLoading}
-        userEmail={user.email}
+        userEmail={user?.email || ""}
         onLogout={handleLogout}
       />
 
