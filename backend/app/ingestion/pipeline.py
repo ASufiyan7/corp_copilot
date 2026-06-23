@@ -7,6 +7,7 @@ from sqlalchemy.orm import Session
 from app.database.session import SessionLocal
 from app.database import documents
 from app.ingestion.parser import strip_html, chunk_text
+from app.retrieval.embeddings import embedding_service
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
@@ -99,14 +100,14 @@ def ingest_all_filings():
             logger.info(f"Generated {len(chunks)} chunks.")
 
             # Store DocumentChunks in bulk
-            # In Phase 5, embeddings are mocked as a 384-dimensional zeros vector
-            mock_embedding = [0.0] * 384
+            embeddings = embedding_service.embed_texts(chunks)
+            logger.info(f"Generated {len(embeddings)} real embeddings.")
             chunks_data = [
                 {
                     "document_id": doc.id,
                     "chunk_index": chunk_idx,
                     "chunk_text": chunk_content,
-                    "embedding": mock_embedding,
+                    "embedding": embeddings[chunk_idx],
                     "chunk_metadata": {
                         "ticker": ticker,
                         "form": form,
