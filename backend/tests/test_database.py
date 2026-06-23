@@ -100,9 +100,10 @@ def test_thread_and_message_crud(db):
 def test_document_and_chunk_crud(db):
     # Test Document Create
     doc_id = uuid.uuid4()
+    ticker_name = f"TEST_AAPL_{uuid.uuid4().hex[:4].upper()}"
     doc = documents.create_document(
         db,
-        ticker="AAPL",
+        ticker=ticker_name,
         company_name="Apple Inc.",
         filing_type="10-K",
         filing_date=date(2024, 1, 15),
@@ -112,7 +113,7 @@ def test_document_and_chunk_crud(db):
     )
     
     assert doc.id == doc_id
-    assert doc.ticker == "AAPL"
+    assert doc.ticker == ticker_name
     assert doc.company_name == "Apple Inc."
     assert doc.filing_type == "10-K"
     assert doc.filing_date == date(2024, 1, 15)
@@ -120,9 +121,9 @@ def test_document_and_chunk_crud(db):
     # Test Retrieve Document
     retrieved_doc = documents.get_document(db, doc_id)
     assert retrieved_doc is not None
-    assert retrieved_doc.ticker == "AAPL"
+    assert retrieved_doc.ticker == ticker_name
 
-    retrieved_by_type = documents.get_document_by_ticker_and_type(db, ticker="AAPL", filing_type="10-K")
+    retrieved_by_type = documents.get_document_by_ticker_and_type(db, ticker=ticker_name, filing_type="10-K")
     assert retrieved_by_type is not None
     assert retrieved_by_type.id == doc_id
 
@@ -224,13 +225,16 @@ def test_vector_similarity_search(db):
 
 def test_full_text_search(db):
     doc_id = uuid.uuid4()
+    unique_suffix = uuid.uuid4().hex[:6]
+    search_term = f"AzureTest{unique_suffix}"
+    
     documents.create_document(
         db,
-        ticker="MSFT",
+        ticker=f"TEST_MSFT_{unique_suffix.upper()}",
         company_name="Microsoft Corp",
         filing_type="10-K",
         filing_date=date(2024, 7, 30),
-        content="Microsoft Azure details.",
+        content=f"Microsoft {search_term} details.",
         doc_id=doc_id
     )
 
@@ -238,7 +242,7 @@ def test_full_text_search(db):
         db,
         document_id=doc_id,
         chunk_index=0,
-        chunk_text="We have experienced rapid growth in Azure AI services.",
+        chunk_text=f"We have experienced rapid growth in {search_term} AI services.",
         embedding=[0.0] * 384
     )
     documents.create_document_chunk(
@@ -249,11 +253,10 @@ def test_full_text_search(db):
         embedding=[0.0] * 384
     )
 
-    # Perform full-text search for 'Azure'
-    search_term = "Azure"
+    # Perform full-text search for the unique term
     results = db.query(DocumentChunk).filter(
         DocumentChunk.tsvector.op("@@")(func.to_tsquery('english', search_term))
     ).all()
 
     assert len(results) == 1
-    assert "Azure" in results[0].chunk_text
+    assert search_term in results[0].chunk_text

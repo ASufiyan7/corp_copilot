@@ -8,7 +8,11 @@ db_url = settings.database_url
 if db_url.startswith("postgresql://"):
     db_url = db_url.replace("postgresql://", "postgresql+psycopg://", 1)
 
-engine = create_engine(db_url, pool_pre_ping=True)
+engine = create_engine(
+    db_url,
+    pool_pre_ping=True,
+    connect_args={"prepare_threshold": None}
+)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 def get_db():
