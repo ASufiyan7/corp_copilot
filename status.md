@@ -12,10 +12,11 @@ Building a production-style document intelligence platform (Document Copilot) fo
 - **Phase 7 (Retrieval)**: Implemented hybrid search retrieval layer combining pgvector cosine distance semantic search, full-text search (tsvector @@ plainto_tsquery) lexical search, and Reciprocal Rank Fusion (RRF) rank aggregation (with k = 60).
 
 - **Phase 8 (Agent)**: Wired up the retrieved context to a PydanticAI agent utilizing Groq (`llama-3.3-70b-versatile`) to generate grounded, structured responses.
+- **Phase 9 (Citations)**: Implemented citation validation layer (`validate_grounding`) checking chunk IDs, document IDs, and verifying normalized excerpts as substrings.
 
 ## Active Phase (Where we left off)
-- Finished **Phase 8 (Agent)**. All 23 automated tests (covering authentication, database CRUD operations, text chunking, embedding generation, hybrid retrieval, and agent integration) pass successfully.
+- Finished **Phase 9 (Citations)**. All 29 automated tests (covering authentication, database CRUD operations, text chunking, embedding generation, hybrid retrieval, agent integration, and citation validation) pass successfully.
 
 ## Next Immediate Steps
-1. **Phase 9 (Citations)**: Implement the citation validation layer on the backend to ensure agent response citations correspond exactly to retrieved chunks, and persist citations in the database.
+1. **Phase 10 (Streaming)**: Implement server-sent events (SSE) chat streaming route (`POST /chat/stream`) sending text-deltas, citations, complete, and error events to the frontend.
 
