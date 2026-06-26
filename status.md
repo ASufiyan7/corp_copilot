@@ -11,9 +11,11 @@ Building a production-style document intelligence platform (Document Copilot) fo
 - **Phase 6 (Embeddings)**: Integrated `sentence-transformers` running the BAAI/bge-small-en-v1.5 model locally on CPU. Re-ran the pipeline to fully ingest all 25 filings (Apple, Microsoft, NVIDIA, Amazon, Alphabet) with real 384-dimensional vector embeddings in Supabase Postgres.
 - **Phase 7 (Retrieval)**: Implemented hybrid search retrieval layer combining pgvector cosine distance semantic search, full-text search (tsvector @@ plainto_tsquery) lexical search, and Reciprocal Rank Fusion (RRF) rank aggregation (with k = 60).
 
+- **Phase 8 (Agent)**: Wired up the retrieved context to a PydanticAI agent utilizing Groq (`llama-3.3-70b-versatile`) to generate grounded, structured responses.
+
 ## Active Phase (Where we left off)
-- Finished **Phase 7 (Retrieval)**. All 20 automated tests (covering authentication, database CRUD operations, text chunking, embedding generation, and hybrid retrieval) pass successfully.
+- Finished **Phase 8 (Agent)**. All 23 automated tests (covering authentication, database CRUD operations, text chunking, embedding generation, hybrid retrieval, and agent integration) pass successfully.
 
 ## Next Immediate Steps
-1. **Phase 8 (Agent)**: Wire up the retrieved context to a PydanticAI agent utilizing Groq (`llama-3.3-70b-versatile`) to generate responses.
+1. **Phase 9 (Citations)**: Implement the citation validation layer on the backend to ensure agent response citations correspond exactly to retrieved chunks, and persist citations in the database.
 
