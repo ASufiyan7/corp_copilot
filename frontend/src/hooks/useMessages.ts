@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { apiFetch } from "../lib/api";
+import { apiFetch, apiFetchStream } from "../lib/api";
 
 export interface Citation {
   chunk_id: string;
@@ -128,26 +128,103 @@ export function useMessages(threadId: string | null) {
     localStorage.setItem(`messages_${threadId}`, JSON.stringify(updatedWithUser));
 
     setLoading(true);
+    setError(null);
 
     try {
-      const response = await apiFetch<any>("/api/chat", {
+      const response = await apiFetchStream("/api/chat/stream", {
         method: "POST",
         body: JSON.stringify({ threadId, message: content }),
       });
-      const assistantMsg: Message = {
-        id: crypto.randomUUID(),
+
+      if (!response.body) {
+        throw new Error("No response body available for stream");
+      }
+
+      const assistantMsgId = crypto.randomUUID();
+      let assistantMsg: Message = {
+        id: assistantMsgId,
         thread_id: threadId,
         role: "assistant",
-        content: response.answer,
+        content: "",
         created_at: new Date().toISOString(),
-        citations: response.citations,
+        citations: [],
       };
-      const finalMessages = [...updatedWithUser, assistantMsg];
-      setMessages(finalMessages);
-      localStorage.setItem(`messages_${threadId}`, JSON.stringify(finalMessages));
+
+      setMessages([...updatedWithUser, assistantMsg]);
+
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder("utf-8");
+      let buffer = "";
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+
+        let boundary = buffer.indexOf("\n\n");
+        while (boundary !== -1) {
+          const messageBlock = buffer.slice(0, boundary).trim();
+          buffer = buffer.slice(boundary + 2);
+
+          let eventType = "message";
+          let dataStr = "";
+
+          const lines = messageBlock.split("\n");
+          for (const line of lines) {
+            if (line.startsWith("event:")) {
+              eventType = line.slice(6).trim();
+            } else if (line.startsWith("data:")) {
+              dataStr = line.slice(5).trim();
+            }
+          }
+
+          if (dataStr) {
+            try {
+              const data = JSON.parse(dataStr);
+              if (eventType === "text-delta") {
+                assistantMsg.content += data.delta;
+                setMessages((prev) =>
+                  prev.map((m) => (m.id === assistantMsgId ? { ...assistantMsg } : m))
+                );
+              } else if (eventType === "citation") {
+                if (!assistantMsg.citations) assistantMsg.citations = [];
+                if (!assistantMsg.citations.some((c) => c.chunk_id === data.chunk_id)) {
+                  assistantMsg.citations = [...assistantMsg.citations, data];
+                  setMessages((prev) =>
+                    prev.map((m) => (m.id === assistantMsgId ? { ...assistantMsg } : m))
+                  );
+                }
+              } else if (eventType === "complete") {
+                assistantMsg = {
+                  id: data.id,
+                  thread_id: threadId,
+                  role: "assistant",
+                  content: data.content,
+                  created_at: data.created_at,
+                  citations: data.citations,
+                };
+                setMessages((prev) =>
+                  prev.map((m) => (m.id === assistantMsgId ? { ...assistantMsg } : m))
+                );
+                
+                const finalMessages = [...updatedWithUser, assistantMsg];
+                localStorage.setItem(`messages_${threadId}`, JSON.stringify(finalMessages));
+              } else if (eventType === "error") {
+                throw new Error(data.detail || "Error streaming response");
+              }
+            } catch (err) {
+              console.warn("Error parsing event data:", err);
+            }
+          }
+
+          boundary = buffer.indexOf("\n\n");
+        }
+      }
       setLoading(false);
-    } catch (err) {
-      // Mock assistant response simulation for UI validation in Phase 3
+    } catch (err: any) {
+      console.warn("Backend stream failed or not supported. Falling back to mock simulation.", err);
+      // Mock assistant response simulation for UI validation when backend is not up
       setTimeout(() => {
         const assistantMsg: Message = {
           id: crypto.randomUUID(),

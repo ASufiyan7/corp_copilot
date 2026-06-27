@@ -1,3 +1,4 @@
+from datetime import datetime, timezone
 import uuid
 from typing import List, Optional
 from sqlalchemy.orm import Session
@@ -80,13 +81,14 @@ def create_message(
 ) -> ChatMessage:
     """Create a new chat message and update the thread's updated_at timestamp."""
     new_id = message_id or uuid.uuid4()
-    db_message = ChatMessage(id=new_id, thread_id=thread_id, role=role, content=content)
+    now = datetime.now(timezone.utc)
+    db_message = ChatMessage(id=new_id, thread_id=thread_id, role=role, content=content, created_at=now)
     db.add(db_message)
     
     # Touch the parent thread to update its updated_at timestamp
     db_thread = get_thread(db, thread_id)
     if db_thread:
-        db_thread.updated_at = db_message.created_at
+        db_thread.updated_at = now
         
     db.commit()
     db.refresh(db_message)

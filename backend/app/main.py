@@ -2,6 +2,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
 from app.api.auth import router as auth_router
+from app.api.threads import router as threads_router
+from app.api.chat import router as chat_router
 
 app = FastAPI(
     title="Document Copilot Backend",
@@ -21,6 +23,8 @@ app.add_middleware(
 )
 
 app.include_router(auth_router, prefix="/api")
+app.include_router(threads_router, prefix="/api")
+app.include_router(chat_router, prefix="/api")
 
 @app.get("/")
 async def status_check():
