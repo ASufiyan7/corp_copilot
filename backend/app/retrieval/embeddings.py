@@ -7,8 +7,22 @@ class EmbeddingService:
     By default, it uses BAAI/bge-small-en-v1.5 and loads it on CPU.
     """
     def __init__(self):
-        # Explicitly set device to CPU for lightweight and predictable performance.
-        self.model = SentenceTransformer(settings.embedding_model, device="cpu")
+        self._model = None
+
+    @property
+    def model(self) -> SentenceTransformer:
+        if self._model is None:
+            model_name = settings.embedding_model
+            try:
+                # Try loading the model (downloads it if not cached locally)
+                self._model = SentenceTransformer(model_name, device="cpu")
+            except Exception as e:
+                # Fallback to local files only if internet is disconnected/HF Hub is blocked
+                try:
+                    self._model = SentenceTransformer(model_name, device="cpu", local_files_only=True)
+                except Exception:
+                    raise e
+        return self._model
 
     def embed_text(self, text: str) -> list[float]:
         """
