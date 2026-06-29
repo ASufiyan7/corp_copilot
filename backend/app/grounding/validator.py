@@ -10,6 +10,21 @@ class GroundingValidationError(Exception):
     """
     pass
 
+def _normalize_text(text: str) -> str:
+    """
+    Normalize text for comparison by:
+    1. Lowercasing.
+    2. Stripping quotes, apostrophes, brackets, and parentheses.
+    3. Replacing other punctuation (commas, periods, semicolons, etc.) with spaces.
+    4. Normalizing consecutive whitespaces into a single space.
+    """
+    t = text.lower()
+    # Remove quotes, apostrophes, brackets, and parentheses
+    t = re.sub(r'["\'`“”‘’\[\]\(\)]', '', t)
+    # Replace other non-alphanumeric characters with spaces
+    t = re.sub(r'[^a-z0-9\s]', ' ', t)
+    return " ".join(t.split())
+
 def validate_grounding(
     answer: GroundedAnswer,
     retrieved_chunks: List[DocumentChunk]
@@ -51,12 +66,18 @@ def validate_grounding(
                 f"excerpt is empty."
             )
             
-        # Normalize whitespace (replace consecutive newlines/spaces with a single space)
-        norm_excerpt = " ".join(excerpt.strip().split())
-        norm_chunk_text = " ".join(chunk.chunk_text.strip().split())
+        norm_excerpt = _normalize_text(excerpt)
+        norm_chunk_text = _normalize_text(chunk.chunk_text)
         
+        if not norm_excerpt:
+            raise GroundingValidationError(
+                f"Grounding validation failed for citation {idx}: "
+                f"excerpt contains no matchable words."
+            )
+            
         if norm_excerpt not in norm_chunk_text:
             raise GroundingValidationError(
                 f"Grounding validation failed for citation {idx}: "
                 f"excerpt is not a substring of the source chunk text."
             )
+
