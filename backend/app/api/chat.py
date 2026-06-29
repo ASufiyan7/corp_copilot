@@ -86,7 +86,7 @@ async def event_generator(thread_id: uuid.UUID, message_content: str, user_id: u
                             sent_citations.add(citation.chunk_id)
 
             # Send final remainder text if any
-            final_answer = await result.get_data()
+            final_answer = await result.get_output()
             new_text = final_answer.answer[len(last_answer):]
             if new_text:
                 yield f"event: text-delta\ndata: {json.dumps({'delta': new_text})}\n\n"

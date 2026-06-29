@@ -81,7 +81,7 @@ class MockStreamedRunResult:
         )
         yield self.final_answer
 
-    async def get_data(self):
+    async def get_output(self):
         return self.final_answer
 
 def test_thread_crud(mock_auth, db):
