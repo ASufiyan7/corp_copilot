@@ -82,27 +82,27 @@ export default function Home() {
           />
         ) : (
           /* Landing/Welcome screen if no active thread is selected */
-          <div className="flex-1 flex flex-col items-center justify-center p-8 text-center relative overflow-hidden">
-            {/* Background Gradients */}
-            <div className="absolute top-[20%] right-[10%] w-[40%] h-[40%] rounded-full bg-violet-900/5 blur-[120px] pointer-events-none" />
-            <div className="absolute bottom-[20%] left-[10%] w-[40%] h-[40%] rounded-full bg-indigo-900/5 blur-[120px] pointer-events-none" />
+          <div className="flex-1 flex flex-col items-center justify-center p-8 text-center relative overflow-hidden bg-zinc-950/20 dot-grid">
+            {/* Ambient Background Neon Glows */}
+            <div className="absolute top-[15%] right-[10%] w-[45%] h-[45%] rounded-full bg-violet-600/5 blur-[130px] pointer-events-none animate-float-medium" />
+            <div className="absolute bottom-[15%] left-[10%] w-[45%] h-[45%] rounded-full bg-indigo-500/5 blur-[130px] pointer-events-none animate-float-slow" />
             
-            <div className="relative z-10 max-w-md flex flex-col items-center">
-              <div className="w-16 h-16 flex items-center justify-center bg-zinc-900 border border-zinc-800 text-indigo-400 rounded-2xl mb-6 shadow-xl">
-                <Compass className="w-8 h-8" />
+            <div className="relative z-10 max-w-md flex flex-col items-center animate-fade-in-up">
+              <div className="w-16 h-16 flex items-center justify-center bg-zinc-900 border border-zinc-800 text-indigo-400 rounded-2xl mb-6 shadow-xl hover:scale-105 hover:border-zinc-750 hover:text-indigo-300 transition-all duration-300 hover:shadow-indigo-500/5">
+                <Compass className="w-8 h-8 animate-pulse text-indigo-450" />
               </div>
-              <h2 className="text-2xl font-bold tracking-tight text-white mb-3 bg-clip-text text-transparent bg-gradient-to-r from-white via-zinc-200 to-zinc-500">
+              <h2 className="text-2.5xl font-extrabold tracking-tight text-white mb-3.5 bg-clip-text text-transparent bg-gradient-to-r from-white via-zinc-200 to-zinc-400">
                 SEC Research Workspace
               </h2>
-              <p className="text-zinc-400 text-sm leading-relaxed mb-8">
+              <p className="text-zinc-450 text-sm leading-relaxed mb-9">
                 Select an existing research conversation from the saved history sidebar, or click below to start a new chat querying Apple, Microsoft, NVIDIA, Amazon, or Alphabet filings.
               </p>
               
               <button
                 onClick={() => createThread()}
-                className="flex items-center justify-center gap-2 py-3 px-6 bg-gradient-to-tr from-indigo-500 to-violet-600 hover:from-indigo-600 hover:to-violet-700 text-white font-semibold rounded-xl shadow-lg shadow-indigo-500/10 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all duration-200"
+                className="flex items-center justify-center gap-2 py-3.5 px-6 bg-gradient-to-tr from-indigo-500 to-violet-600 hover:from-indigo-650 hover:to-violet-700 text-white font-bold rounded-xl shadow-lg hover:shadow-indigo-500/20 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-indigo-500/30 transition-all duration-200 cursor-pointer"
               >
-                <Plus className="w-5 h-5" />
+                <Plus className="w-5 h-5 text-indigo-200" />
                 Start New Research
               </button>
             </div>

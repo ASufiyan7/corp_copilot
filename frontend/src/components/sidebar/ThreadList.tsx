@@ -37,13 +37,13 @@ export default function ThreadList({
   };
 
   return (
-    <aside className="w-80 flex flex-col bg-zinc-950 border-r border-zinc-900 text-zinc-300">
+    <aside className="w-80 flex flex-col bg-zinc-950/80 backdrop-blur-md border-r border-zinc-900 text-zinc-300 select-none">
       
       {/* Sidebar Header */}
       <div className="p-4 border-b border-zinc-900">
         <div className="flex items-center gap-3 mb-4">
-          <div className="w-8 h-8 flex items-center justify-center bg-gradient-to-tr from-indigo-500 to-violet-600 rounded-lg shadow-lg shadow-indigo-500/20">
-            <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="w-9 h-9 flex items-center justify-center bg-gradient-to-tr from-indigo-500 to-violet-600 rounded-xl shadow-lg shadow-indigo-500/20 transition-transform duration-300 hover:rotate-3">
+            <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 009 11m-6 11h10a5 5 0 005-5v-3.5m0 0A3.5 3.5 0 1113.5 9V5a3.5 3.5 0 00-7 0v3.5a3.5 3.5 0 01-1.5 2.5m6-6V2" />
             </svg>
           </div>
@@ -53,7 +53,7 @@ export default function ThreadList({
         <button
           onClick={handleCreate}
           disabled={creating}
-          className="w-full flex items-center justify-center gap-2 py-2.5 px-4 bg-zinc-900 hover:bg-zinc-850 text-white hover:text-white border border-zinc-800 hover:border-zinc-700 font-medium rounded-lg text-sm shadow-sm transition-all duration-200 disabled:opacity-50"
+          className="w-full flex items-center justify-center gap-2 py-2.5 px-4 bg-zinc-900/50 hover:bg-zinc-900 border border-zinc-800 hover:border-zinc-700 text-white font-medium rounded-xl text-sm shadow-sm transition-all duration-200 active:scale-[0.98] disabled:opacity-50 cursor-pointer"
         >
           {creating ? (
             <Loader2 className="w-4 h-4 animate-spin text-indigo-400" />
@@ -66,17 +66,17 @@ export default function ThreadList({
 
       {/* Sidebar Thread List */}
       <div className="flex-1 overflow-y-auto p-3 space-y-1 scrollbar-thin">
-        <h3 className="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-zinc-500">
+        <h3 className="px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-zinc-500">
           Saved Conversations
         </h3>
         
         {loading && threads.length === 0 ? (
           <div className="flex items-center justify-center p-8 gap-2 text-zinc-500 text-xs">
-            <Loader2 className="w-4 h-4 animate-spin" />
+            <Loader2 className="w-4 h-4 animate-spin text-indigo-500" />
             Loading conversations...
           </div>
         ) : threads.length === 0 ? (
-          <div className="px-3 py-6 text-zinc-500 text-xs text-center">
+          <div className="px-3 py-8 text-zinc-500 text-xs text-center border border-dashed border-zinc-900 rounded-xl m-1">
             No research conversations found.
           </div>
         ) : (
@@ -86,14 +86,14 @@ export default function ThreadList({
               <div
                 key={thread.id}
                 onClick={() => setActiveThreadId(thread.id)}
-                className={`group flex items-center justify-between px-3 py-2.5 rounded-lg text-sm cursor-pointer transition-all duration-150 ${
+                className={`group flex items-center justify-between px-3 py-2.5 rounded-xl text-sm cursor-pointer transition-all duration-200 ${
                   isActive
-                    ? "bg-zinc-900 text-white font-medium border border-zinc-800"
-                    : "hover:bg-zinc-900/50 hover:text-zinc-200 border border-transparent"
+                    ? "bg-zinc-900 text-white font-medium border border-zinc-800/80 shadow-md shadow-black/10"
+                    : "text-zinc-400 hover:bg-zinc-900/40 hover:text-zinc-200 border border-transparent"
                 }`}
               >
                 <div className="flex items-center gap-2.5 overflow-hidden flex-1">
-                  <MessageSquare className={`w-4 h-4 flex-shrink-0 ${isActive ? "text-indigo-400" : "text-zinc-500"}`} />
+                  <MessageSquare className={`w-4 h-4 flex-shrink-0 transition-colors duration-200 ${isActive ? "text-indigo-400" : "text-zinc-650 group-hover:text-zinc-400"}`} />
                   <span className="truncate pr-2">{thread.title || "Untitled Chat"}</span>
                 </div>
                 <button
@@ -101,7 +101,7 @@ export default function ThreadList({
                     e.stopPropagation();
                     deleteThread(thread.id);
                   }}
-                  className="opacity-0 group-hover:opacity-100 hover:text-red-400 p-1 rounded hover:bg-zinc-800 text-zinc-500 transition-all duration-150"
+                  className="opacity-0 group-hover:opacity-100 focus:opacity-100 hover:text-red-400 p-1.5 rounded-lg hover:bg-red-950/20 text-zinc-500 transition-all duration-200 transform scale-95 hover:scale-100 active:scale-90"
                   title="Delete conversation"
                 >
                   <Trash2 className="w-3.5 h-3.5" />
@@ -113,16 +113,22 @@ export default function ThreadList({
       </div>
 
       {/* Sidebar Footer */}
-      <div className="p-4 border-t border-zinc-900 bg-zinc-950/80">
-        <div className="flex flex-col gap-2">
+      <div className="p-4 border-t border-zinc-900 bg-zinc-950/40 backdrop-blur-sm">
+        <div className="flex flex-col gap-3">
           {userEmail && (
-            <div className="text-xs text-zinc-500 truncate px-1">
-              User: <span className="text-zinc-300 font-mono">{userEmail}</span>
+            <div className="flex items-center gap-2.5 px-1">
+              <div className="w-8 h-8 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-[10px] font-bold text-indigo-400 uppercase shadow-inner">
+                {userEmail.substring(0, 2)}
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-[9px] text-zinc-500 font-bold uppercase tracking-wider leading-none mb-1">Research Analyst</p>
+                <p className="text-xs text-zinc-300 font-mono truncate leading-none">{userEmail}</p>
+              </div>
             </div>
           )}
           <button
             onClick={onLogout}
-            className="w-full flex items-center justify-center gap-2 py-2 px-3 hover:bg-zinc-900 text-zinc-400 hover:text-red-400 border border-transparent hover:border-zinc-850 text-xs font-semibold rounded-lg transition-all duration-150"
+            className="w-full flex items-center justify-center gap-2 py-2 px-3 hover:bg-red-950/15 text-zinc-400 hover:text-red-400 border border-transparent hover:border-red-900/20 text-xs font-semibold rounded-lg transition-all duration-200 cursor-pointer"
           >
             Sign Out
           </button>

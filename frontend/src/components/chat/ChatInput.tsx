@@ -37,7 +37,7 @@ export default function ChatInput({ onSend, disabled, placeholder }: ChatInputPr
   };
 
   return (
-    <form onSubmit={handleSubmit} className="relative flex items-end gap-3 bg-zinc-950/40 border border-zinc-900 rounded-xl p-2.5 focus-within:border-zinc-800 transition-all duration-200">
+    <form onSubmit={handleSubmit} className="relative flex items-end gap-3 bg-zinc-900/25 border border-zinc-800/85 rounded-2xl p-2.5 focus-within:border-indigo-500/50 focus-within:ring-2 focus-within:ring-indigo-500/10 backdrop-blur-md transition-all duration-300">
       <textarea
         ref={textareaRef}
         rows={1}
@@ -52,7 +52,7 @@ export default function ChatInput({ onSend, disabled, placeholder }: ChatInputPr
       <button
         type="submit"
         disabled={!text.trim() || disabled}
-        className="p-2.5 bg-gradient-to-tr from-indigo-500 to-violet-600 disabled:from-zinc-900 disabled:to-zinc-900 text-white disabled:text-zinc-600 rounded-lg shadow-md transition-all duration-200 disabled:opacity-50 disabled:shadow-none flex-shrink-0"
+        className="p-2.5 bg-gradient-to-tr from-indigo-500 to-violet-600 disabled:from-zinc-900 disabled:to-zinc-900 text-white disabled:text-zinc-650 rounded-xl shadow-md transition-all duration-250 hover:shadow-lg hover:shadow-indigo-500/15 active:scale-95 disabled:opacity-40 disabled:scale-100 disabled:shadow-none flex-shrink-0 cursor-pointer"
       >
         {disabled ? (
           <Loader2 className="w-4.5 h-4.5 animate-spin" />

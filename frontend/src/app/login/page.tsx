@@ -62,24 +62,24 @@ export default function LoginPage() {
 
   return (
     <div className="relative min-h-screen flex items-center justify-center bg-black overflow-hidden font-sans">
-      {/* Background Neon Glows */}
-      <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-indigo-900/20 blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-violet-900/20 blur-[120px] pointer-events-none" />
+      {/* Dynamic Background Neon Glows */}
+      <div className="absolute top-[-15%] left-[-15%] w-[60%] h-[60%] rounded-full bg-indigo-500/10 blur-[130px] pointer-events-none animate-float-slow" />
+      <div className="absolute bottom-[-15%] right-[-15%] w-[60%] h-[60%] rounded-full bg-violet-600/10 blur-[130px] pointer-events-none animate-float-medium" />
 
       {/* Main Glassmorphic Card Container */}
-      <div className="relative z-10 w-full max-w-md p-8 sm:p-10 mx-4 bg-zinc-950/40 backdrop-blur-xl border border-zinc-800/80 rounded-2xl shadow-2xl transition-all duration-300">
+      <div className="relative z-10 w-full max-w-md p-8 sm:p-10 mx-4 glass-panel rounded-2xl shadow-2xl shadow-indigo-950/10 hover:border-zinc-800/80 transition-all duration-500 animate-fade-in-up">
         
         {/* Header */}
         <div className="flex flex-col items-center mb-8">
-          <div className="flex items-center justify-center w-12 h-12 mb-3 bg-gradient-to-tr from-indigo-500 to-violet-600 rounded-xl shadow-lg shadow-indigo-500/20">
+          <div className="flex items-center justify-center w-12 h-12 mb-4 bg-gradient-to-tr from-indigo-500 to-violet-600 rounded-2xl shadow-lg shadow-indigo-500/20 hover:scale-105 active:scale-95 transition-transform duration-300">
             <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 009 11m-6 11h10a5 5 0 005-5v-3.5m0 0A3.5 3.5 0 1113.5 9V5a3.5 3.5 0 00-7 0v3.5a3.5 3.5 0 01-1.5 2.5m6-6V2" />
             </svg>
           </div>
-          <h2 className="text-2xl font-bold tracking-tight text-white">
+          <h2 className="text-2xl font-bold tracking-tight text-white bg-clip-text text-transparent bg-gradient-to-r from-white via-zinc-200 to-zinc-400">
             Document Copilot
           </h2>
-          <p className="mt-2 text-sm text-zinc-400 text-center">
+          <p className="mt-2 text-sm text-zinc-400 text-center transition-all duration-300">
             {isSignUp ? "Create an account to access SEC Filings" : "Sign in to access SEC Filings"}
           </p>
         </div>
@@ -89,7 +89,7 @@ export default function LoginPage() {
           
           {/* Email Address */}
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-300 mb-2">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-2">
               Email Address
             </label>
             <input
@@ -98,14 +98,14 @@ export default function LoginPage() {
               placeholder="analyst@driftwood.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-3 bg-zinc-900/60 border border-zinc-800 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 placeholder-zinc-600 transition-all duration-200"
+              className="w-full px-4 py-3 bg-zinc-900/30 hover:bg-zinc-900/50 focus:bg-zinc-900/50 border border-zinc-800/80 focus:border-indigo-500 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 placeholder-zinc-650 transition-all duration-200"
               required
             />
           </div>
 
           {/* Password */}
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-300 mb-2">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-2">
               Password
             </label>
             <input
@@ -114,19 +114,19 @@ export default function LoginPage() {
               placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-3 bg-zinc-900/60 border border-zinc-800 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 placeholder-zinc-600 transition-all duration-200"
+              className="w-full px-4 py-3 bg-zinc-900/30 hover:bg-zinc-900/50 focus:bg-zinc-900/50 border border-zinc-800/80 focus:border-indigo-500 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 placeholder-zinc-650 transition-all duration-200"
               required
             />
           </div>
 
           {/* Alerts */}
           {error && (
-            <div className="p-3 bg-red-950/30 border border-red-800/50 text-red-400 text-sm rounded-lg">
+            <div className="p-3 bg-red-950/20 border border-red-800/30 text-red-400 text-xs rounded-lg animate-pulse">
               {error}
             </div>
           )}
           {message && (
-            <div className="p-3 bg-emerald-950/30 border border-emerald-800/50 text-emerald-400 text-sm rounded-lg">
+            <div className="p-3 bg-emerald-950/20 border border-emerald-800/30 text-emerald-400 text-xs rounded-lg">
               {message}
             </div>
           )}
@@ -135,7 +135,7 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="relative w-full py-3 bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-600 hover:to-violet-700 text-white font-semibold rounded-lg shadow-lg shadow-indigo-500/10 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden"
+            className="relative w-full py-3 bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-650 hover:to-violet-700 text-white font-semibold rounded-lg shadow-lg hover:shadow-indigo-500/20 active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-indigo-500/30 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden"
           >
             {loading ? (
               <span className="flex items-center justify-center gap-2">
@@ -160,7 +160,7 @@ export default function LoginPage() {
               setError(null);
               setMessage(null);
             }}
-            className="text-sm text-indigo-400 hover:text-indigo-300 font-medium transition-colors duration-150 focus:outline-none"
+            className="text-sm text-indigo-400 hover:text-indigo-300 font-medium transition-colors duration-150 focus:outline-none cursor-pointer"
           >
             {isSignUp ? "Already have an account? Sign In" : "Don't have an account? Sign Up"}
           </button>
